@@ -105,7 +105,21 @@ if (which mutt > /dev/null 2>&1); then
 
   if [ ! -z "$attachments" ]; then
     if [ ! -z $USERMAIL ]; then
-      echo "Please, use this configuration in only one device" | mutt -s "Your VPN configuration" -a $attachments -- $USERMAIL
+      mutt -s "Your VPN configuration" -a $attachments -- $USERMAIL < $(cat <<"EOT"
+Hi there!
+
+Your VPN configuration files are attached to this email.
+
+You'll need to use Wireguard as a client application. You can download
+a proper setup application for your system from the link below:
+
+https://www.wireguard.com/install/
+
+Please, use this config in only one device.
+
+Best regards!
+EOT
+      )
     fi
   fi
 fi
