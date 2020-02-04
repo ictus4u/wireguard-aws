@@ -1,15 +1,24 @@
 #!/bin/bash
 
 # We read from the input parameter the name of the client
-if [ -z "$1" ]
-  then 
+if [ -z "$1" ]; then
     read -p "Enter VPN user name: " USERNAME
-    if [ -z $USERNAME ]
-      then
+    if [ -z $USERNAME ]; then
       echo "[#]Empty VPN user name. Exit"
       exit 1;
     fi
   else USERNAME=$1
+fi
+
+if (which mutt > /dev/null 2>&1); then
+  # We read from the input parameter the email of the client
+  if [ -z "$2" ]; then
+      read -p "Enter VPN user email: " USERMAIL
+      if [ -z $USERMAIL ]; then
+        echo "[#]Empty VPN user email. Email won't be sent."
+      fi
+    else USERMAIL=$2
+  fi
 fi
 
 cd /etc/wireguard/
@@ -46,7 +55,7 @@ echo $OCTET_IP > /etc/wireguard/last_used_ip.var
 
 CLIENT_IP="$VPN_SUBNET$OCTET_IP/32"
 
-# Create a blank configuration file client 
+# Create a blank configuration file client
 cat > /etc/wireguard/clients/$USERNAME/$USERNAME.conf << EOF
 [Interface]
 PrivateKey = $CLIENT_PRIVKEY
@@ -84,3 +93,19 @@ cat ./$USERNAME.conf
 
 # Save QR config to png file
 #qrencode -t png -o ./$USERNAME.png < ./$USERNAME.conf
+
+if (which mutt > /dev/null 2>&1); then
+  attachments=""
+  if [ -f ./$USERNAME.conf ]
+    attachments=" ./$USERNAME.conf"
+  fi
+  if [ -f ./$USERNAME.png ]
+    attachments=" ./$USERNAME.png"
+  fi
+
+  if [ ! -z "$attachments" ]; then
+    if [ ! -z $USERMAIL ]; then
+      echo "Please, use this configuration in only one device" | mutt -s "Your VPN configuration" -a $attachments -- $USERMAIL
+    fi
+  fi
+fi
