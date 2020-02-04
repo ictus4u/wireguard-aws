@@ -97,10 +97,10 @@ qrencode -t png -o ./$USERNAME.png < ./$USERNAME.conf
 if (which mutt > /dev/null 2>&1); then
   attachments=""
   if [ -f ./$USERNAME.conf ]; then
-    attachments=" ./$USERNAME.conf"
+    attachments+=" ./$USERNAME.conf"
   fi
   if [ -f ./$USERNAME.png ]; then
-    attachments=" ./$USERNAME.png"
+    attachments+=" ./$USERNAME.png"
   fi
 
   if [ ! -z "$attachments" ]; then
