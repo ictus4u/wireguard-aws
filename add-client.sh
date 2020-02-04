@@ -105,7 +105,7 @@ if (which mutt > /dev/null 2>&1); then
 
   if [ ! -z "$attachments" ]; then
     if [ ! -z $USERMAIL ]; then
-      mutt -s "Your VPN configuration" -a $attachments -- $USERMAIL < $(cat <<"EOT"
+      message=$(cat <<"EOT"
 Hi there!
 
 Your VPN configuration files are attached to this email.
@@ -120,6 +120,7 @@ Please, use this config in only one device.
 Best regards!
 EOT
       )
+      echo $message | mutt -s "Your VPN configuration" -a $attachments -- $USERMAIL
     fi
   fi
 fi
