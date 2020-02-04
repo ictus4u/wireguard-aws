@@ -96,10 +96,10 @@ cat ./$USERNAME.conf
 
 if (which mutt > /dev/null 2>&1); then
   attachments=""
-  if [ -f ./$USERNAME.conf ]
+  if [ -f ./$USERNAME.conf ]; then
     attachments=" ./$USERNAME.conf"
   fi
-  if [ -f ./$USERNAME.png ]
+  if [ -f ./$USERNAME.png ]; then
     attachments=" ./$USERNAME.png"
   fi
 
